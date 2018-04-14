@@ -8,6 +8,6 @@
 2.Инструкция по запуску програмы
   1.mkdir TweetoTa
   2.cd TweetoTa
-  3.git clone https://github.com/Unnsin/twitterPars.git .
+  3.git clone https://github.com/Unnsin/TweetoTa.git .
   4.pip install urllib,bs4
   5.python twitterpars.py
