@@ -6,9 +6,8 @@
 Прежде чем использовать данное ПО убедитесь в том что на вашем компьютере установлен python 3 версии
 
 2.Инструкция по запуску програмы
-
-$: mkdir TweetoTa
-$: cd TweetoTa
-$: git clone https://github.com/Unnsin/twitterPars.git .
-$: pip install urllib,bs4
-$: python twitterpars.py
+  1.mkdir TweetoTa
+  2.cd TweetoTa
+  3.git clone https://github.com/Unnsin/twitterPars.git .
+  4.pip install urllib,bs4
+  5.python twitterpars.py
