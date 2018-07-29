@@ -37,6 +37,12 @@ class Parser(object):
       name = soup.find("span", class_="username u-dir u-textTruncate")
       tweety = tweet(name.text, tweetx.text, url)
       return tweety
+    
+    def addAccount(self, string):
+      self.file.append(string)
+
+    def getAccounts(self):
+      return self.file
 
 
 

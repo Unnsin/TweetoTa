@@ -10,14 +10,16 @@ sys.path.append(os.path.join(sys.path[0], '../parse/'))
 import twitterpars
 filename = "sysname.txt"
 file = open(filename, encoding="UTF-8", mode="r")
-
+files = []
+for line in file: 
+    files.append(line)
 
 class TweetoTa(QWidget):
   def __init__(self):
     super().__init__()
     self.AccountText = ''
     self.initUI()
-    self.parser = twitterpars.Parser(file)
+    self.parser = twitterpars.Parser(files)
     
     
   def initUI(self):
@@ -66,7 +68,8 @@ class TweetoTa(QWidget):
       self.logOutput.insertPlainText('Tweet: ' + tweet.Text + '\n\n\n')
 
   def AddButtonClicked(self):
-    print(self.AccountText)
+    account = 'https://twitter.com/' + self.AccountText
+    self.parser.addAccount(account)
 
   def closeEvent(self, event):
     reply = QMessageBox.question(self, 'Message',
@@ -74,6 +77,10 @@ class TweetoTa(QWidget):
       QMessageBox.No, QMessageBox.No)
 
     if reply == QMessageBox.Yes:
+      accounts = self.parser.getAccounts()
+      filew = open(filename, encoding="UTF-8", mode="w")
+      for acc in accounts: 
+        filew.write(acc)
       event.accept()
     else:
       event.ignore()
