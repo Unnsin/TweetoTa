@@ -3,7 +3,7 @@ import os
 from PyQt5.QtWidgets import (
     QWidget, QMessageBox, QToolTip,
     QPushButton, QDesktopWidget, QApplication,
-    QLabel, QLineEdit, QVBoxLayout, QTextEdit)  
+    QLabel, QLineEdit, QGridLayout, QTextEdit)  
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import QCoreApplication
 sys.path.append(os.path.join(sys.path[0], '../parse/'))
@@ -21,7 +21,6 @@ class TweetoTa(QWidget):
     self.initUI()
     self.parser = twitterpars.Parser(files)
     
-    
   def initUI(self):
     QToolTip.setFont(QFont('SansSerif', 10))
     self.setToolTip('This is a <b>QWidget</b> widget')
@@ -30,7 +29,6 @@ class TweetoTa(QWidget):
     self.logOutput.setReadOnly(True)
     self.logOutput.resize(470,420)
     self.logOutput.move(10, 15)
-    vbox = QVBoxLayout()
 
     self.qle = QLineEdit(self)
     self.qle.move(500, 10)
@@ -53,7 +51,7 @@ class TweetoTa(QWidget):
     self.exbtn.setToolTip('This is a exit button')
     self.exbtn.clicked.connect(QCoreApplication.instance().quit)
     self.exbtn.resize(self.exbtn.sizeHint())
-    self.exbtn.move(560, 410)
+    self.exbtn.move(540, 410)
 
     self.startbtn = QPushButton('Start', self)
     self.startbtn.setToolTip('This is a start button')
@@ -61,11 +59,36 @@ class TweetoTa(QWidget):
     self.startbtn.resize(self.startbtn.sizeHint())
     self.startbtn.move(538, 70)
 
+    self.editbtn = QPushButton('Edit', self)
+    self.editbtn.setToolTip('This is a edit accounts button')
+    self.editbtn.clicked.connect(self.EditButtonClick)
+    self.editbtn.resize(self.editbtn.sizeHint())
+    self.editbtn.move(540, 105)
+
+    self.savebtn = QPushButton('Save', self)
+    self.savebtn.setToolTip('This is a edit accounts button')
+    self.savebtn.clicked.connect(self.SaveButtonClick)
+    self.savebtn.resize(self.savebtn.sizeHint())
+    self.savebtn.move(540, 370)
+    self.savebtn.hide()
+
+  def SaveButtonClick(self): 
+    print(self.logOutput.toPlainText())
+
   def StartButtonClick(self):
+    self.logOutput.setPlainText('')
     tweets = self.parser.getInitialTweets()
     for tweet in tweets: 
       self.logOutput.insertPlainText('Name: ' + tweet.Name + '\n')
       self.logOutput.insertPlainText('Tweet: ' + tweet.Text + '\n\n\n')
+  
+  def EditButtonClick(self):
+    self.logOutput.setReadOnly(False)
+    text = ''
+    for line in files: 
+        text = text + line
+    self.logOutput.setPlainText(text)
+    self.savebtn.show()
 
   def AddButtonClicked(self):
     account = 'https://twitter.com/' + self.AccountText
