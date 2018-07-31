@@ -3,7 +3,7 @@ import os
 from PyQt5.QtWidgets import (
     QWidget, QMessageBox, QToolTip,
     QPushButton, QDesktopWidget, QApplication,
-    QLabel, QLineEdit, QGridLayout, QTextEdit)  
+    QLabel, QLineEdit, QVBoxLayout, QHBoxLayout, QTextEdit)  
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import (QCoreApplication, QTimer)
 sys.path.append(os.path.join(sys.path[0], '../parse/'))
@@ -29,18 +29,26 @@ class TweetoTa(QWidget):
   def initUI(self):
     QToolTip.setFont(QFont('SansSerif', 10))
     self.setToolTip('This is a <b>QWidget</b> widget')
-    
+    self.MainBox = QHBoxLayout()
+    self.LBox = QVBoxLayout()
+    self.RBox = QVBoxLayout()
+    self.MainBox.addLayout(self.LBox)
+    self.MainBox.addLayout(self.RBox)
+    self
     self.logOutput = QTextEdit(self)
     self.logOutput.setReadOnly(True)
-    self.logOutput.resize(470,420)
-    self.logOutput.move(10, 15)
+    self.logOutput.setFixedSize(480,420)
+    self.LBox.addWidget(self.logOutput)
 
     self.qle = QLineEdit(self)
-    self.qle.move(500, 10)
+    self.qle.setFixedSize(180, 35)
     self.qle.textChanged[str].connect(self.onChanged)
-    
+    self.RBox.addWidget(self.qle)
+
+
     self.initButtons()
 
+    self.setLayout (self.MainBox)
     self.setGeometry(300, 300, 300, 200)
     self.setWindowTitle('Tooltips')
     self.show()
@@ -50,47 +58,48 @@ class TweetoTa(QWidget):
     self.btn.setToolTip('This is a add acount button')
     self.btn.clicked.connect(self.AddButtonClicked)
     self.btn.resize(self.btn.sizeHint())
-    self.btn.move(525, 40)
-
-    self.stopbtn = QPushButton('Stop', self)
-    self.stopbtn.setToolTip('This is a stop acount button')
-    self.stopbtn.clicked.connect(self.StopButtonClicked)
-    self.stopbtn.resize(self.stopbtn.sizeHint())
-    self.stopbtn.move(525, 165)
-    self.stopbtn.hide()
-
-    self.exbtn = QPushButton('Quit', self)
-    self.exbtn.setToolTip('This is a exit button')
-    self.exbtn.clicked.connect(QCoreApplication.instance().quit)
-    self.exbtn.resize(self.exbtn.sizeHint())
-    self.exbtn.move(540, 410)
-
+    self.RBox.addWidget(self.btn)
 
     self.startbtn = QPushButton('Start', self)
     self.startbtn.setToolTip('This is a start button')
     self.startbtn.clicked.connect(self.StartButtonClick)
     self.startbtn.resize(self.startbtn.sizeHint())
-    self.startbtn.move(538, 70)
+    self.RBox.addWidget(self.startbtn)
+
+    self.stopbtn = QPushButton('Stop', self)
+    self.stopbtn.setToolTip('This is a stop acount button')
+    self.stopbtn.clicked.connect(self.StopButtonClicked)
+    self.stopbtn.resize(self.stopbtn.sizeHint())
+    self.RBox.addWidget(self.stopbtn)
+    self.stopbtn.hide()
 
     self.editbtn = QPushButton('Edit', self)
     self.editbtn.setToolTip('This is a edit accounts button')
     self.editbtn.clicked.connect(self.EditButtonClick)
     self.editbtn.resize(self.editbtn.sizeHint())
     self.editbtn.move(540, 105)
-
-    self.savebtn = QPushButton('Save', self)
-    self.savebtn.setToolTip('This is a edit accounts button')
-    self.savebtn.clicked.connect(self.SaveButtonClick)
-    self.savebtn.resize(self.savebtn.sizeHint())
-    self.savebtn.move(540, 370)
-    self.savebtn.hide()
+    self.RBox.addWidget(self.editbtn)
+    self.RBox.addStretch(1)
 
     self.clearbtn = QPushButton('Clear', self)
     self.clearbtn.setToolTip('This is a clear button')
     self.clearbtn.clicked.connect(self.ClearButtonClick)
     self.clearbtn.resize(self.clearbtn.sizeHint())
-    self.clearbtn.move(540, 135)
+    self.RBox.addWidget(self.clearbtn)
     self.clearbtn.show()
+    
+    self.savebtn = QPushButton('Save', self)
+    self.savebtn.setToolTip('This is a edit accounts button')
+    self.savebtn.clicked.connect(self.SaveButtonClick)
+    self.savebtn.resize(self.savebtn.sizeHint())
+    self.RBox.addWidget(self.savebtn)
+    self.savebtn.hide()
+
+    self.exbtn = QPushButton('Quit', self)
+    self.exbtn.setToolTip('This is a exit button')
+    self.exbtn.clicked.connect(QCoreApplication.instance().quit)
+    self.exbtn.resize(self.exbtn.sizeHint())
+    self.RBox.addWidget(self.exbtn)
 
   def StopButtonClicked(self):
       self.Timer.stop()
@@ -105,6 +114,7 @@ class TweetoTa(QWidget):
     fileText = text.split('\n')
     self.parser.setFile(fileText)
     self.files = fileText
+    self.savebtn.hide()
 
   def GetTweets(self):
     self.tweets = []
