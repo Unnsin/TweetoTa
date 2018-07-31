@@ -19,7 +19,9 @@ class TweetoTa(QWidget):
     super().__init__()
     self.AccountText = ''
     self.initUI()
-    self.parser = twitterpars.Parser(files)
+    self.files = files
+    self.parser = twitterpars.Parser(self.files)
+    self.tweets = []
     
   def initUI(self):
     QToolTip.setFont(QFont('SansSerif', 10))
@@ -72,13 +74,29 @@ class TweetoTa(QWidget):
     self.savebtn.move(540, 370)
     self.savebtn.hide()
 
+    self.clearbtn = QPushButton('Clear', self)
+    self.clearbtn.setToolTip('This is a clear button')
+    self.clearbtn.clicked.connect(self.ClearButtonClick)
+    self.clearbtn.resize(self.clearbtn.sizeHint())
+    self.clearbtn.move(540, 135)
+    self.clearbtn.show()
+
+  def ClearButtonClick(self): 
+    self.logOutput.setPlainText('')  
+
   def SaveButtonClick(self): 
-    print(self.logOutput.toPlainText())
+    text = self.logOutput.toPlainText()
+    self.logOutput.setPlainText('')
+    fileText = text.split('\n')
+    self.parser.setFile(fileText)
+    self.files = fileText
+
 
   def StartButtonClick(self):
+    self.tweets = []
     self.logOutput.setPlainText('')
-    tweets = self.parser.getInitialTweets()
-    for tweet in tweets: 
+    self.tweets = self.parser.getInitialTweets()
+    for tweet in self.tweets: 
       self.logOutput.insertPlainText('Name: ' + tweet.Name + '\n')
       self.logOutput.insertPlainText('Tweet: ' + tweet.Text + '\n\n\n')
   
@@ -116,6 +134,8 @@ class TweetoTa(QWidget):
 
   def onChanged(self, text):
     self.AccountText = text
+
+
 
 if __name__ == '__main__':
     

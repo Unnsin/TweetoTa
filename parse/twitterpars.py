@@ -21,11 +21,12 @@ class Parser(object):
       self.file = file      
 
     def getInitialTweets(self):
+      tweets = []
       for line in self.file:
         url = line
         buf = self.parse(self.get_html(url), url)
-        self.tweets.append(buf)
-      return self.tweets
+        tweets.append(buf)
+      return tweets
 
     def get_html(self, url):
       response = urllib.request.urlopen(url);
@@ -41,8 +42,16 @@ class Parser(object):
     def addAccount(self, string):
       self.file.append(string)
 
+    def setFile(self, arr): 
+      self.file = arr
+
+    def parseAccount(self, url):
+      return self.parse(self.get_html(url), url)
+
     def getAccounts(self):
       return self.file
+
+
 
 
 
