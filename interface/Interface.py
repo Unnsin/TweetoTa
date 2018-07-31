@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import (
     QPushButton, QDesktopWidget, QApplication,
     QLabel, QLineEdit, QGridLayout, QTextEdit)  
 from PyQt5.QtGui import QFont
-from PyQt5.QtCore import QCoreApplication
+from PyQt5.QtCore import (QCoreApplication, QTimer)
 sys.path.append(os.path.join(sys.path[0], '../parse/'))
 import twitterpars
 filename = "sysname.txt"
@@ -22,6 +22,9 @@ class TweetoTa(QWidget):
     self.files = files
     self.parser = twitterpars.Parser(self.files)
     self.tweets = []
+    self.Timer = QTimer(self)
+    self.Timer.setSingleShot(False)
+    self.Timer.timeout.connect(self.GetTweets)
     
   def initUI(self):
     QToolTip.setFont(QFont('SansSerif', 10))
@@ -49,11 +52,19 @@ class TweetoTa(QWidget):
     self.btn.resize(self.btn.sizeHint())
     self.btn.move(525, 40)
 
+    self.stopbtn = QPushButton('Stop', self)
+    self.stopbtn.setToolTip('This is a stop acount button')
+    self.stopbtn.clicked.connect(self.StopButtonClicked)
+    self.stopbtn.resize(self.stopbtn.sizeHint())
+    self.stopbtn.move(525, 165)
+    self.stopbtn.hide()
+
     self.exbtn = QPushButton('Quit', self)
     self.exbtn.setToolTip('This is a exit button')
     self.exbtn.clicked.connect(QCoreApplication.instance().quit)
     self.exbtn.resize(self.exbtn.sizeHint())
     self.exbtn.move(540, 410)
+
 
     self.startbtn = QPushButton('Start', self)
     self.startbtn.setToolTip('This is a start button')
@@ -81,6 +92,10 @@ class TweetoTa(QWidget):
     self.clearbtn.move(540, 135)
     self.clearbtn.show()
 
+  def StopButtonClicked(self):
+      self.Timer.stop()
+      self.stopbtn.hide()
+
   def ClearButtonClick(self): 
     self.logOutput.setPlainText('')  
 
@@ -91,14 +106,18 @@ class TweetoTa(QWidget):
     self.parser.setFile(fileText)
     self.files = fileText
 
-
-  def StartButtonClick(self):
+  def GetTweets(self):
     self.tweets = []
     self.logOutput.setPlainText('')
     self.tweets = self.parser.getInitialTweets()
     for tweet in self.tweets: 
       self.logOutput.insertPlainText('Name: ' + tweet.Name + '\n')
       self.logOutput.insertPlainText('Tweet: ' + tweet.Text + '\n\n\n')
+        
+  def StartButtonClick(self):
+    self.stopbtn.show()
+    self.GetTweets()
+    self.Timer.start(10000)
   
   def EditButtonClick(self):
     self.logOutput.setReadOnly(False)
